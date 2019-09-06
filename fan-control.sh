@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl
+#!/usr/bin/perl
 
 # This script works on SuperMicro X9 and X10 IPMI motherboards to control FANA Peripheral
 # Zone fan speed in response to maximum hard drive temperature.
@@ -50,10 +50,10 @@ $debug = 1;	# 0 for no debug. 1..4 for verbosity
 
 # edit the following values
 $number_of_hard_drives = 8;
-$hd_designator = "/dev/ada";
+$hd_designator = "/dev/sd";
 $min_fan_speed = 300;
 $max_fan_speed = 1400;
-$max_allowed_temp = 40;	# celsius. you will hit 100% duty cycle when you HDs hit this temp.
+$max_allowed_temp = 41;	# celsius. you will hit 100% duty cycle when you HDs hit this temp.
 
 $LogFile = '/root/HD_TempLog.txt';
 $min_fan_speed *= 1.4;
@@ -76,9 +76,9 @@ $datestring = strftime "%F %H:%M:%S", localtime;
 open (LOGFILE, ">>$LogFile");
 
 $max_temp = 0;
-
-foreach $item (0..$number_of_hard_drives-1) {
-  $command = "/usr/local/sbin/smartctl -A $hd_designator$item | grep Temperature_Celsius";
+@hdds = ("a","b","c","d","e","f","g");
+foreach $item (@hdds) {
+  $command = "/usr/sbin/smartctl -A $hd_designator$item | grep Temperature_Celsius";
 
   if( $debug > 3) {
     print "$command\n";
